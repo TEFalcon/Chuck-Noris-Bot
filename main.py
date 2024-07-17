@@ -1,12 +1,19 @@
 import discord
 import os
-
+import requests
+import json
 
 
 intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents=intents)
+
+def get_Joke():
+  response = requests.get("https://api.chucknorris.io/jokes/random")
+  json_data = json.loads(response.text)
+  joke = json_data['value']
+  return joke
 
 @client.event
 async def on_ready():
@@ -18,8 +25,8 @@ async def on_message(message):
   if message.author == client.user:
     return
 
-  if message.content.startswith('$hello'):
-    await message.channel.send('Hello!')
+  if message.content.startswith('$chuck'):
+    await message.channel.send(get_Joke())
 
 
 try:

@@ -9,6 +9,7 @@ packages = [{include = "repl_nix_chuck_noris_bot"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 discord-py = "^2.4.0"
+requests = "^2.32.3"
 
 
 [build-system]

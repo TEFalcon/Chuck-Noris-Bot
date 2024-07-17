@@ -3,17 +3,26 @@ import os
 import requests
 import json
 
-
 intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents=intents)
 
-def get_Joke():
-  response = requests.get("https://api.chucknorris.io/jokes/random")
-  json_data = json.loads(response.text)
-  joke = json_data['value']
-  return joke
+
+def get_Noris_Joke():
+    response = requests.get("https://api.chucknorris.io/jokes/random")
+    json_data = json.loads(response.text)
+    joke = json_data['value']
+    return joke
+
+
+def get_Dad_Joke():
+    header = {'Accept': 'application/json'}
+    response = requests.get("https://icanhazdadjoke.com/",headers=header)
+    json_data = json.loads(response.text)
+    joke = json_data['joke']
+    return joke
+
 
 @client.event
 async def on_ready():
@@ -22,18 +31,21 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-  if message.author == client.user:
-    return
+    if message.author == client.user:
+        return
 
-  if message.content.startswith('$chuck'):
-    await message.channel.send(get_Joke())
+    if message.content.startswith('$chuck'):
+        await message.channel.send(get_Noris_Joke())
+
+    elif message.content.startswith('$dad'):
+        await message.channel.send(get_Dad_Joke())
 
 
 try:
-  token = os.getenv("TOKEN") or ""
-  if token == "":
-    raise Exception("Please add your token to the Secrets pane.")
-  client.run(token)
+    token = os.getenv("TOKEN") or ""
+    if token == "":
+        raise Exception("Please add your token to the Secrets pane.")
+    client.run(token)
 except discord.HTTPException as e:
     if e.status == 429:
         print(
@@ -44,6 +56,3 @@ except discord.HTTPException as e:
         )
     else:
         raise e
-
-
-
